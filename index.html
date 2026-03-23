@@ -10,6 +10,7 @@
 
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
     <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -17,7 +18,7 @@
       const { useState, useMemo, useEffect, useRef } = React;
       const root = document.getElementById("root");
 
-      if (!window.Recharts) {
+      if (!window.Recharts || !window.Recharts.RadarChart || !window.Recharts.ResponsiveContainer) {
         root.innerHTML =
           '<div style="min-height:100vh;background:#0b1120;color:#e2e8f0;display:flex;align-items:center;justify-content:center;padding:24px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;text-align:center">Unable to load charting library. Please refresh the page in a few moments.</div>';
         throw new Error("Recharts failed to load from CDN");

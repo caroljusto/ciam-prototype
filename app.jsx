@@ -13,68 +13,78 @@ const QS = [
     { t: "Multiple systems need manual or batch updates", s: 2 },
     { t: "Most systems sync from a central store, but a few still require separate updates", s: 3 },
     { t: "One change propagates automatically across every customer touchpoint", s: 4 },
+    { t: "Customer identity is unified globally with near real-time consistency and no duplicate records", s: 5 },
   ]},
   { dim: "architecture", q: "If your CIAM platform went down for 30 minutes during peak hours, what would the customer impact be?", opts: [
     { t: "All customer-facing logins and registrations would stop completely", s: 1 },
     { t: "Most applications would be affected, though some have local session caches", s: 2 },
     { t: "Existing sessions would continue but new logins would fail across channels", s: 3 },
     { t: "Failover or multi-region redundancy would keep customer impact minimal", s: 4 },
+    { t: "Active-active architecture with tested failover would keep logins and registrations operating with negligible impact", s: 5 },
   ]},
   { dim: "security", q: "If a database of 10 million stolen credentials was published tomorrow and included your customers' emails, what would happen?", opts: [
     { t: "We'd have no automated way to detect or respond to credential stuffing attacks", s: 1 },
     { t: "Rate limiting would slow attacks down, but we can't proactively check against breached credentials", s: 2 },
     { t: "We'd detect unusual login patterns and could force password resets for affected accounts", s: 3 },
     { t: "Breached password detection would automatically block compromised credentials and trigger step-up verification", s: 4 },
+    { t: "Real-time risk detection would block attacks across channels with adaptive controls and automated incident workflows", s: 5 },
   ]},
   { dim: "security", q: "What percentage of your customer base currently uses anything stronger than a password to authenticate?", opts: [
     { t: "Less than 5% — MFA is not available or not promoted", s: 1 },
     { t: "5–20% — MFA is optional and available on some applications", s: 2 },
     { t: "20–60% — MFA is encouraged or required for sensitive operations", s: 3 },
     { t: "Over 60% — MFA is standard, with passwordless or passkeys actively adopted", s: 4 },
+    { t: "Over 85% — passwordless or phishing-resistant MFA is the default experience across all customer journeys", s: 5 },
   ]},
   { dim: "operations", q: "When was the last time someone manually changed a CIAM configuration directly in production — and how would you know if they did?", opts: [
     { t: "Changes are regularly made in production, and there's no reliable audit trail", s: 1 },
     { t: "Some changes go through staging, but urgent fixes are applied directly in production", s: 2 },
     { t: "Most changes go through CI/CD, though admin console changes still happen occasionally", s: 3 },
     { t: "All changes are version-controlled with automated deployment, and direct production edits trigger alerts", s: 4 },
+    { t: "Production is fully policy-guarded: all changes are automated, approved, immutable, and continuously monitored for drift", s: 5 },
   ]},
   { dim: "operations", q: "If authentication failure rates doubled overnight, how quickly would your team know — and what would they do?", opts: [
     { t: "We'd likely find out from customer complaints or support tickets", s: 1 },
     { t: "We monitor uptime but don't have specific alerting on authentication failure rates", s: 2 },
     { t: "We'd see it in dashboards within hours and could investigate manually", s: 3 },
     { t: "Automated alerting would trigger within minutes, with runbooks for investigation and response", s: 4 },
+    { t: "Detection and remediation are largely automated, with identity-specific playbooks executed in minutes and audited end-to-end", s: 5 },
   ]},
   { dim: "devex", q: "A new product team needs to add customer login to their application. What does that process look like?", opts: [
     { t: "They'll likely build their own auth integration — there's no shared approach", s: 1 },
     { t: "They can reference what other teams have done, but there's no standard pattern or documentation", s: 2 },
     { t: "Standardized SDKs and docs exist, though teams still need identity team support to get started", s: 3 },
     { t: "Self-service — templates, documentation, sandbox environments, and they can ship in a day", s: 4 },
+    { t: "Fully productized platform experience — teams integrate through golden paths with automated security and compliance checks by default", s: 5 },
   ]},
   { dim: "devex", q: "How confident are you that every application integrating with your CIAM platform is doing so correctly and securely?", opts: [
     { t: "Not confident — each team implemented their own way and we haven't audited them", s: 1 },
     { t: "We trust the teams that built them, but haven't systematically reviewed integration quality", s: 2 },
     { t: "We've reviewed the major applications, but newer or smaller apps haven't been audited", s: 3 },
     { t: "Automated checks validate integration patterns, and all apps go through identity security review before launch", s: 4 },
+    { t: "Continuous compliance validation covers all applications in production with enforced controls and automated remediation workflows", s: 5 },
   ]},
   { dim: "compliance", q: "A customer emails asking for a complete copy of all personal data you hold about them. You have 30 days. What happens?", opts: [
     { t: "It would be a significant scramble — we're not sure we'd find everything in time", s: 1 },
     { t: "We could do it, but it requires manual work across multiple systems and teams", s: 2 },
     { t: "We have a defined process, but it's partially manual and depends on specific people being available", s: 3 },
     { t: "Automated or self-service — the customer can export their data directly, or we can fulfill it within days", s: 4 },
+    { t: "End-to-end automated DSR workflows provide complete, verifiable responses within hours across all systems", s: 5 },
   ]},
   { dim: "compliance", q: "If a regulator asked you to prove exactly what customer consent you collected, when, and for what purpose — could you produce that evidence today?", opts: [
     { t: "No — we capture consent at registration but don't maintain a versioned, auditable record", s: 1 },
     { t: "We have consent records, but they may not cover all data processing activities or be easily exportable", s: 2 },
     { t: "Consent is tracked with timestamps and purposes, though producing a complete audit package would take effort", s: 3 },
     { t: "Granular consent records with full audit trail, version history, and export-ready reporting", s: 4 },
+    { t: "Regulator-ready evidence is continuously maintained with policy-to-enforcement traceability across all processing activities", s: 5 },
   ]},
 ];
 
 const LEVELS = [
-  { min: 0, max: 1.5, label: "Initial", color: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)" },
-  { min: 1.5, max: 2.5, label: "Developing", color: "#f97316", bg: "rgba(249,115,22,0.1)", border: "rgba(249,115,22,0.25)" },
-  { min: 2.5, max: 3.5, label: "Established", color: "#eab308", bg: "rgba(234,179,8,0.1)", border: "rgba(234,179,8,0.25)" },
-  { min: 3.5, max: 4.01, label: "Advanced", color: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.25)" },
+  { min: 0, max: 2, label: "Initial", color: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)" },
+  { min: 2, max: 3, label: "Developing", color: "#f97316", bg: "rgba(249,115,22,0.1)", border: "rgba(249,115,22,0.25)" },
+  { min: 3, max: 4, label: "Established", color: "#eab308", bg: "rgba(234,179,8,0.1)", border: "rgba(234,179,8,0.25)" },
+  { min: 4, max: 5.01, label: "Advanced", color: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.25)" },
 ];
 
 const OVERALL_DESC = {
@@ -113,7 +123,7 @@ const DIM_DETAIL = {
 };
 
 function getLevel(s) { return LEVELS.find(l => s >= l.min && s < l.max) || LEVELS[0]; }
-function getDetail(dim, s) { return s <= 2 ? DIM_DETAIL[dim].low : s <= 3 ? DIM_DETAIL[dim].mid : DIM_DETAIL[dim].high; }
+function getDetail(dim, s) { return s <= 2.5 ? DIM_DETAIL[dim].low : s <= 4 ? DIM_DETAIL[dim].mid : DIM_DETAIL[dim].high; }
 const PERSONAL_EMAIL_DOMAINS = new Set([
   "gmail.com",
   "googlemail.com",
@@ -191,7 +201,7 @@ function App() {
     return v.length ? Math.round((v.reduce((a, b) => a + b, 0) / v.length) * 10) / 10 : 0;
   }, [scores]);
 
-  const rd = scores.map(s => ({ subject: s.short, score: s.score, fullMark: 4 }));
+  const rd = scores.map(s => ({ subject: s.short, score: s.score, fullMark: 5 }));
   const oLevel = getLevel(overall);
   const sorted = [...scores].sort((a, b) => a.score - b.score);
 
@@ -299,7 +309,7 @@ function App() {
 
         <div style={{ textAlign: "center", marginBottom: 10 }}>
           <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2.5, color: "#60a5fa", textTransform: "uppercase", marginBottom: 16 }}>Your CIAM Health Profile</div>
-          <div style={{ fontSize: 56, fontWeight: 700, lineHeight: 1 }}><AnimNum value={overall} color={oLevel.color} /><span style={{ fontSize: 22, color: "#3b4a63" }}> / 4.0</span></div>
+          <div style={{ fontSize: 56, fontWeight: 700, lineHeight: 1 }}><AnimNum value={overall} color={oLevel.color} /><span style={{ fontSize: 22, color: "#3b4a63" }}> / 5.0</span></div>
           <div style={{ display: "inline-block", marginTop: 10, padding: "5px 16px", borderRadius: 20, fontSize: 13, fontWeight: 600, color: oLevel.color, background: oLevel.bg, border: `1px solid ${oLevel.border}` }}>{oLevel.label}</div>
           <p style={{ fontSize: 14, color: "#8896b0", lineHeight: 1.65, maxWidth: 520, margin: "14px auto 0" }}>{OVERALL_DESC[oLevel.label]}</p>
         </div>
@@ -309,7 +319,7 @@ function App() {
             <RadarChart data={rd} cx="50%" cy="50%">
               <PolarGrid stroke="rgba(255,255,255,0.06)" />
               <PolarAngleAxis dataKey="subject" tick={{ fill: "#8896b0", fontSize: 12 }} />
-              <PolarRadiusAxis angle={90} domain={[0, 4]} tick={{ fill: "#3b4a63", fontSize: 10 }} tickCount={5} />
+              <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fill: "#3b4a63", fontSize: 10 }} tickCount={6} />
               <Radar dataKey="score" stroke="#60a5fa" fill="#60a5fa" fillOpacity={0.15} strokeWidth={2} dot={{ r: 4, fill: "#60a5fa" }} />
             </RadarChart>
           </ResponsiveContainer>
@@ -318,7 +328,7 @@ function App() {
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
           {scores.map(s => {
             const lv = getLevel(s.score);
-            const pct = (s.score / 4) * 100;
+            const pct = (s.score / 5) * 100;
             const det = getDetail(s.key, s.score);
             return (
               <div key={s.key} style={{ ...sty.card, padding: "18px 22px" }}>
@@ -338,8 +348,8 @@ function App() {
         <div style={{ background: "rgba(96,165,250,0.06)", borderRadius: 12, border: "1px solid rgba(96,165,250,0.15)", padding: "20px 24px", marginBottom: 32 }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: "#60a5fa", marginBottom: 8 }}>Where You're Most Exposed</div>
           <p style={{ fontSize: 14, color: "#c4cfdf", lineHeight: 1.65, margin: 0 }}>
-            Based on your responses, <strong style={{ color: "#f1f5f9" }}>{sorted[0]?.label}</strong> ({sorted[0]?.score}/4.0) represents your greatest perceived exposure
-            {sorted[1] && sorted[1].score < 3.5 && <>, followed by <strong style={{ color: "#f1f5f9" }}>{sorted[1]?.label}</strong> ({sorted[1]?.score}/4.0)</>}.
+            Based on your responses, <strong style={{ color: "#f1f5f9" }}>{sorted[0]?.label}</strong> ({sorted[0]?.score}/5.0) represents your greatest perceived exposure
+            {sorted[1] && sorted[1].score < 4 && <>, followed by <strong style={{ color: "#f1f5f9" }}>{sorted[1]?.label}</strong> ({sorted[1]?.score}/5.0)</>}.
             {" "}Unlock the detailed findings below to understand what these scores mean and what to focus on first.
           </p>
         </div>

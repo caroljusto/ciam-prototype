@@ -114,6 +114,26 @@ const DIM_DETAIL = {
 
 function getLevel(s) { return LEVELS.find(l => s >= l.min && s < l.max) || LEVELS[0]; }
 function getDetail(dim, s) { return s <= 2 ? DIM_DETAIL[dim].low : s <= 3 ? DIM_DETAIL[dim].mid : DIM_DETAIL[dim].high; }
+const PERSONAL_EMAIL_DOMAINS = new Set([
+  "gmail.com",
+  "googlemail.com",
+  "outlook.com",
+  "hotmail.com",
+  "live.com",
+  "msn.com",
+  "yahoo.com",
+  "ymail.com",
+  "aol.com",
+  "icloud.com",
+  "me.com",
+  "mac.com",
+  "proton.me",
+  "protonmail.com",
+  "pm.me",
+  "gmx.com",
+  "mail.com",
+  "zoho.com",
+]);
 
 function AnimNum({ value, color }) {
   const [disp, setDisp] = useState(0);
@@ -138,11 +158,9 @@ function App() {
   const [sel, setSel] = useState(null);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
-  const [company, setCompany] = useState("");
-  const [size, setSize] = useState("");
-  const [industry, setIndustry] = useState("");
   const [platform, setPlatform] = useState("");
   const [emailErr, setEmailErr] = useState(false);
+  const [emailDomainErr, setEmailDomainErr] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
 
   const cq = QS[qi];
@@ -179,8 +197,21 @@ function App() {
 
   function submitGate(e) {
     if (e) e.preventDefault();
-    if (!email || !email.includes("@") || !email.includes(".")) { setEmailErr(true); return; }
+    const normalizedEmail = email.trim().toLowerCase();
+    const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
+    if (!emailIsValid) {
+      setEmailErr(true);
+      setEmailDomainErr(false);
+      return;
+    }
+    const domain = normalizedEmail.split("@")[1] || "";
+    if (PERSONAL_EMAIL_DOMAINS.has(domain)) {
+      setEmailErr(false);
+      setEmailDomainErr(true);
+      return;
+    }
     setEmailErr(false);
+    setEmailDomainErr(false);
     setShowDetail(true);
   }
 
@@ -320,21 +351,11 @@ function App() {
               <p style={{ fontSize: 13, color: "#6b7c96", margin: 0 }}>Get the full analysis: what each score means for your business, where the real risks are, and what to prioritize.</p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 440, margin: "0 auto" }}>
-              <input value={email} onChange={e => { setEmail(e.target.value); setEmailErr(false); }} placeholder="Work email *" style={{ padding: "11px 14px", fontSize: 14, background: "rgba(255,255,255,0.04)", border: emailErr ? "1px solid #ef4444" : "1px solid rgba(255,255,255,0.08)", borderRadius: 6, color: "#f1f5f9", outline: "none" }} />
+              <input value={email} onChange={e => { setEmail(e.target.value); setEmailErr(false); setEmailDomainErr(false); }} placeholder="Work email *" style={{ padding: "11px 14px", fontSize: 14, background: "rgba(255,255,255,0.04)", border: (emailErr || emailDomainErr) ? "1px solid #ef4444" : "1px solid rgba(255,255,255,0.08)", borderRadius: 6, color: "#f1f5f9", outline: "none" }} />
               {emailErr && <span style={{ fontSize: 11, color: "#ef4444", marginTop: -4 }}>Please enter a valid work email</span>}
+              {emailDomainErr && <span style={{ fontSize: 11, color: "#ef4444", marginTop: -4 }}>Please use your company email address (personal domains are not allowed)</span>}
               <div style={{ display: "flex", gap: 10 }}>
                 <input value={role} onChange={e => setRole(e.target.value)} placeholder="Your role" style={{ flex: 1, padding: "11px 14px", fontSize: 14, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, color: "#f1f5f9", outline: "none" }} />
-                <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Company" style={{ flex: 1, padding: "11px 14px", fontSize: 14, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, color: "#f1f5f9", outline: "none" }} />
-              </div>
-              <div style={{ display: "flex", gap: 10 }}>
-                <select value={size} onChange={e => setSize(e.target.value)} style={{ flex: 1, padding: "11px 14px", fontSize: 14, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, color: size ? "#f1f5f9" : "#586a84", outline: "none" }}>
-                  <option value="">Company size</option>
-                  <option value="1-100">1–100</option><option value="100-500">100–500</option><option value="500-2000">500–2,000</option><option value="2000-10000">2,000–10,000</option><option value="10000+">10,000+</option>
-                </select>
-                <select value={industry} onChange={e => setIndustry(e.target.value)} style={{ flex: 1, padding: "11px 14px", fontSize: 14, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, color: industry ? "#f1f5f9" : "#586a84", outline: "none" }}>
-                  <option value="">Industry</option>
-                  <option value="financial">Financial Services</option><option value="healthcare">Healthcare</option><option value="retail">Retail / E-commerce</option><option value="tech">Technology / SaaS</option><option value="media">Media / Entertainment</option><option value="energy">Energy / Utilities</option><option value="gov">Government</option><option value="other">Other</option>
-                </select>
               </div>
               <select value={platform} onChange={e => setPlatform(e.target.value)} style={{ padding: "11px 14px", fontSize: 14, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, color: platform ? "#f1f5f9" : "#586a84", outline: "none" }}>
                 <option value="">Current CIAM platform (optional)</option>

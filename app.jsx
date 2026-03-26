@@ -20,7 +20,7 @@ const QS = [
     { t: "Most applications would be affected, though some have local session caches", s: 2 },
     { t: "Existing sessions would continue but new logins would fail across channels", s: 3 },
     { t: "Failover or multi-region redundancy would keep customer impact minimal", s: 4 },
-    { t: "Active-active architecture with tested failover would keep logins and registrations operating with negligible impact", s: 5 },
+    { t: "Active-active multi-region with failover tested through regular DR drills — our last test showed zero customer-visible disruption.", s: 5 },
   ]},
   { dim: "security", q: "If a database of 10 million stolen credentials was published tomorrow and included your customers' emails, what would happen?", opts: [
     { t: "We'd have no automated way to detect or respond to credential stuffing attacks", s: 1 },
@@ -48,7 +48,7 @@ const QS = [
     { t: "We monitor uptime but don't have specific alerting on authentication failure rates", s: 2 },
     { t: "We'd see it in dashboards within hours and could investigate manually", s: 3 },
     { t: "Automated alerting would trigger within minutes, with runbooks for investigation and response", s: 4 },
-    { t: "Detection and remediation are largely automated, with identity-specific playbooks executed in minutes and audited end-to-end", s: 5 },
+    { t: "Detection triggers automated remediation through identity-specific playbooks, executed within minutes and audited end-to-end.", s: 5 },
   ]},
   { dim: "devex", q: "A new product team needs to add customer login to their application. What does that process look like?", opts: [
     { t: "They'll likely build their own auth integration — there's no shared approach", s: 1 },
@@ -81,10 +81,11 @@ const QS = [
 ];
 
 const LEVELS = [
-  { min: 0, max: 2, label: "Initial", color: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)" },
-  { min: 2, max: 3, label: "Developing", color: "#f97316", bg: "rgba(249,115,22,0.1)", border: "rgba(249,115,22,0.25)" },
-  { min: 3, max: 4, label: "Established", color: "#eab308", bg: "rgba(234,179,8,0.1)", border: "rgba(234,179,8,0.25)" },
-  { min: 4, max: 5.01, label: "Advanced", color: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.25)" },
+  { min: 1, max: 1.5, label: "Initial", color: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)" },
+  { min: 1.5, max: 2.5, label: "Developing", color: "#f97316", bg: "rgba(249,115,22,0.1)", border: "rgba(249,115,22,0.25)" },
+  { min: 2.5, max: 3.5, label: "Established", color: "#eab308", bg: "rgba(234,179,8,0.1)", border: "rgba(234,179,8,0.25)" },
+  { min: 3.5, max: 4.5, label: "Advanced", color: "#3b82f6", bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.25)" },
+  { min: 4.5, max: 5.01, label: "Leading", color: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.25)" },
 ];
 
 const OVERALL_DESC = {
@@ -92,6 +93,7 @@ const OVERALL_DESC = {
   Developing: "Foundations are in place but your environment appears to be reactive rather than proactive. Organizations at this stage typically discover, during an expert review, that the gaps between what they believe is working and what's actually configured are wider than expected — particularly in security and compliance.",
   Established: "Solid practices across most dimensions, with specific areas where automation, enforcement, or coverage gaps may create hidden exposure. At this level, the highest-value insight usually comes from validating whether your actual platform configuration matches your intended policies.",
   Advanced: "Your responses indicate a mature environment. Even at this level, expert-led assessments typically uncover configuration drift, edge cases in compliance enforcement, or optimization opportunities that internal teams don't have the bandwidth to identify.",
+  Leading: "Your responses indicate a high-performing identity program with strong operational discipline. Even leading teams benefit from periodic external validation to challenge assumptions, test resilience under stress, and identify optimization opportunities that internal teams may not prioritize.",
 };
 
 const DIM_DETAIL = {
@@ -123,7 +125,7 @@ const DIM_DETAIL = {
 };
 
 function getLevel(s) { return LEVELS.find(l => s >= l.min && s < l.max) || LEVELS[0]; }
-function getDetail(dim, s) { return s <= 2.5 ? DIM_DETAIL[dim].low : s <= 4 ? DIM_DETAIL[dim].mid : DIM_DETAIL[dim].high; }
+function getDetail(dim, s) { return s <= 2 ? DIM_DETAIL[dim].low : s <= 3.5 ? DIM_DETAIL[dim].mid : DIM_DETAIL[dim].high; }
 const PERSONAL_EMAIL_DOMAINS = new Set([
   "gmail.com",
   "googlemail.com",
